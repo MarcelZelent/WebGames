@@ -157,7 +157,7 @@
         .grid {
             display: grid;
             gap: 8px;
-            margin-bottom: 14px;
+            margin-bottom: 20px;
             min-height: 80px;
         }
 
@@ -208,52 +208,6 @@
             100% {
                 transform: scale(0);
             }
-        }
-
-        .board-actions {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .winnable-btn {
-            flex: none;
-            background: #fbbf24;
-            color: white;
-            min-width: 220px;
-        }
-
-        .winnable-btn:hover {
-            background: #f59e0b;
-            transform: translateY(-2px);
-        }
-
-        .winnable-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .winnable-result {
-            font-weight: bold;
-            font-size: 0.95em;
-            min-width: 160px;
-            text-align: center;
-        }
-
-        .winnable-result.success {
-            color: #047857;
-        }
-
-        .winnable-result.error {
-            color: #b91c1c;
-        }
-
-        .winnable-result.info {
-            color: #1e40af;
         }
 
         .buttons {
@@ -392,15 +346,6 @@
             .buttons {
                 grid-template-columns: 1fr;
             }
-
-            .winnable-btn {
-                width: 100%;
-                min-width: unset;
-            }
-
-            .winnable-result {
-                width: 100%;
-            }
         }
 
         @media (max-width: 380px) {
@@ -460,11 +405,6 @@
 
         <div class="grid" id="grid"></div>
 
-        <div class="board-actions">
-            <button class="winnable-btn" onclick="checkBoardWinnable()" id="winnable-btn">Sprawdź czy da się wygrać</button>
-            <span class="winnable-result info" id="winnable-result"></span>
-        </div>
-
         <div class="buttons">
             <button class="new-game-btn" onclick="newGame()" id="new-game-btn">Nowa gra</button>
             <button class="undo-btn" onclick="undoMove()" id="undo-btn" disabled>↩ Cofnij</button>
@@ -491,8 +431,7 @@
                     'Dopasowane liczby zostawiają puste pola na swoim miejscu',
                     'Jeśli cały rząd jest pusty, znika, a rzędy poniżej przesuwają się w górę',
                     'Możesz cofać ruchy bez limitu.',
-                    'Nowa plansza jest generowana tak, aby była możliwa do wyczyszczenia.',
-                    'Możesz sprawdzić, czy aktualna plansza nadal da się wyczyścić.',
+                    'Nowa plansza jest całkowicie losowa.',
                     'Wyczyść wszystkie liczby, aby wygrać!'
                 ],
                 scoreLabel: 'Wynik',
@@ -501,7 +440,6 @@
                 newGameBtn: 'Nowa gra',
                 undoBtn: '↩ Cofnij',
                 addRowBtn: 'Dodaj rząd',
-                winnableBtn: 'Sprawdź czy da się wygrać',
                 left: 'pozostało',
                 msgMatch: 'Dopasuj liczby, które sumują się do 10 lub są takie same!',
                 msgSelect: 'Wybierz pasującą liczbę',
@@ -513,11 +451,6 @@
                 msgWidthChanged: 'Szerokość planszy zmieniona. Nowa gra rozpoczęta.',
                 msgUndo: 'Cofnięto ostatni ruch.',
                 msgNoUndo: 'Nie ma ruchu do cofnięcia.',
-                msgChecking: 'Sprawdzam...',
-                msgWinnable: '✅ Da się wygrać',
-                msgNotWinnable: '❌ Nie da się wygrać',
-                msgTooHard: '⚠️ Zbyt złożone',
-                msgAlreadyWon: '✅ Już pusta',
                 msgWin: '🎉 Wygrałeś! Wynik:',
                 msgWinMoves: 'w',
                 msgWinMovesText: 'ruchach!',
@@ -539,8 +472,7 @@
                     'Matched numbers leave empty spaces in place',
                     'If a whole row is empty, it disappears and rows below move up',
                     'You can undo moves with no limit.',
-                    'A new board is generated so it is possible to clear.',
-                    'You can check if the current board is still possible to clear.',
+                    'New boards are completely random.',
                     'Clear all numbers to win!'
                 ],
                 scoreLabel: 'Score',
@@ -549,7 +481,6 @@
                 newGameBtn: 'New Game',
                 undoBtn: '↩ Undo',
                 addRowBtn: 'Add Row',
-                winnableBtn: 'Check if winnable',
                 left: 'left',
                 msgMatch: 'Match numbers that sum to 10 or are the same!',
                 msgSelect: 'Select a matching number',
@@ -561,11 +492,6 @@
                 msgWidthChanged: 'Board width changed. New game started.',
                 msgUndo: 'Undid the last move.',
                 msgNoUndo: 'There is no move to undo.',
-                msgChecking: 'Checking...',
-                msgWinnable: '✅ Winnable',
-                msgNotWinnable: '❌ Not winnable',
-                msgTooHard: '⚠️ Too complex',
-                msgAlreadyWon: '✅ Already empty',
                 msgWin: '🎉 You Win! Score:',
                 msgWinMoves: 'in',
                 msgWinMovesText: 'moves!',
@@ -589,8 +515,6 @@
 
         const INITIAL_ROWS = 4;
         const VALID_WIDTHS = [4, 5, 6, 7, 8, 9, 10, 11];
-        const SOLVER_MAX_STATES = 75000;
-        const SOLVER_MAX_TIME_MS = 900;
 
         function setLanguage(lang) {
             currentLang = lang;
@@ -619,7 +543,6 @@
             document.getElementById('rows-label').textContent = t.rowsLabel;
             document.getElementById('new-game-btn').textContent = t.newGameBtn;
             document.getElementById('undo-btn').textContent = t.undoBtn;
-            document.getElementById('winnable-btn').textContent = t.winnableBtn;
             document.getElementById('add-row-btn').textContent = `${t.addRowBtn} (${rowsLeft} ${t.left})`;
             
             document.documentElement.lang = currentLang;
@@ -649,58 +572,27 @@
             rowsLeft = 3;
             history = [];
             isResolvingMatch = false;
-            grid = generateGuaranteedSolvableBoard(INITIAL_ROWS);
+            grid = generateRandomBoard(INITIAL_ROWS);
             
             updateDisplay();
-            clearWinnableResult();
             updateUndoButton();
             showMessage(translations[currentLang].msgMatch, 'info');
         }
 
-        function generateGuaranteedSolvableBoard(rowCount) {
-            const totalCells = rowCount * COLS;
-            const flatNumbers = [];
-
-            for (let i = 0; i < totalCells; i += 2) {
-                const pair = generateCompatiblePair();
-                flatNumbers.push(pair[0], pair[1]);
-            }
-
+        function generateRandomBoard(rowCount) {
             const board = [];
 
             for (let row = 0; row < rowCount; row++) {
                 const currentRow = [];
 
                 for (let col = 0; col < COLS; col++) {
-                    currentRow.push(flatNumbers[row * COLS + col]);
+                    currentRow.push(Math.floor(Math.random() * 9) + 1);
                 }
 
                 board.push(currentRow);
             }
 
             return board;
-        }
-
-        function generateCompatiblePair() {
-            const useSameNumber = Math.random() < 0.35;
-
-            if (useSameNumber) {
-                const value = Math.floor(Math.random() * 9) + 1;
-                return maybeSwap([value, value]);
-            }
-
-            const first = Math.floor(Math.random() * 9) + 1;
-            const second = 10 - first;
-
-            return maybeSwap([first, second]);
-        }
-
-        function maybeSwap(pair) {
-            if (Math.random() < 0.5) {
-                return [pair[1], pair[0]];
-            }
-
-            return pair;
         }
 
         function saveHistory() {
@@ -734,7 +626,6 @@
             rowsLeft = previous.rowsLeft;
 
             updateDisplay();
-            clearWinnableResult();
             updateUndoButton();
             showMessage(t.msgUndo, 'info');
         }
@@ -764,7 +655,6 @@
                 rowsLeft--;
                 selectedCell = null;
                 updateDisplay();
-                clearWinnableResult();
 
                 const t = translations[currentLang];
                 showMessage(`${t.rowAdded} ${rowsLeft} ${t.rowsRemaining}`, 'info');
@@ -952,7 +842,6 @@
                 removeEmptyRows();
                 isResolvingMatch = false;
                 updateDisplay();
-                clearWinnableResult();
                 updateUndoButton();
                 checkWin();
             }, 500);
@@ -975,7 +864,6 @@
                 const t = translations[currentLang];
 
                 showMessage(`${t.msgWin} ${score} ${t.msgWinMoves} ${moves} ${t.msgWinMovesText}`, 'success');
-                setWinnableResult(t.msgAlreadyWon, 'success');
 
                 setTimeout(() => {
                     if (confirm(`${t.confirmWin} ${score} ${t.confirmWinPts} ${moves} ${t.confirmWinMoves}`)) {
@@ -1000,156 +888,12 @@
             updateUndoButton();
         }
 
-        function checkBoardWinnable() {
-            const t = translations[currentLang];
-            const btn = document.getElementById('winnable-btn');
-
-            if (isResolvingMatch) return;
-
-            if (grid.length === 0 || !grid.some(row => row.some(cell => cell !== 0))) {
-                setWinnableResult(t.msgAlreadyWon, 'success');
-                return;
-            }
-
-            btn.disabled = true;
-            setWinnableResult(t.msgChecking, 'info');
-
-            setTimeout(() => {
-                const result = isBoardWinnable(grid);
-
-                btn.disabled = false;
-
-                if (result === true) {
-                    setWinnableResult(t.msgWinnable, 'success');
-                } else if (result === false) {
-                    setWinnableResult(t.msgNotWinnable, 'error');
-                } else {
-                    setWinnableResult(t.msgTooHard, 'info');
-                }
-            }, 30);
-        }
-
-        function setWinnableResult(text, type) {
-            const result = document.getElementById('winnable-result');
-            result.textContent = text;
-            result.className = `winnable-result ${type}`;
-        }
-
-        function clearWinnableResult() {
-            const result = document.getElementById('winnable-result');
-            result.textContent = '';
-            result.className = 'winnable-result info';
-        }
-
-        function isBoardWinnable(startBoard) {
-            const memo = new Set();
-            const startTime = performance.now();
-            let statesChecked = 0;
-            let timedOut = false;
-
-            function dfs(board) {
-                if (performance.now() - startTime > SOLVER_MAX_TIME_MS) {
-                    timedOut = true;
-                    return false;
-                }
-
-                statesChecked++;
-
-                if (statesChecked > SOLVER_MAX_STATES) {
-                    timedOut = true;
-                    return false;
-                }
-
-                board = removeEmptyRowsFromBoard(board);
-
-                if (board.length === 0 || !board.some(row => row.some(cell => cell !== 0))) {
-                    return true;
-                }
-
-                const key = boardToKey(board);
-
-                if (memo.has(key)) {
-                    return false;
-                }
-
-                memo.add(key);
-
-                const pairs = findAllPossiblePairs(board);
-
-                if (pairs.length === 0) {
-                    return false;
-                }
-
-                pairs.sort((a, b) => {
-                    const boardA = applyPairToBoard(board, a);
-                    const boardB = applyPairToBoard(board, b);
-                    return boardA.length - boardB.length;
-                });
-
-                for (const pair of pairs) {
-                    const nextBoard = applyPairToBoard(board, pair);
-
-                    if (dfs(nextBoard)) {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            const solved = dfs(cloneBoard(startBoard));
-
-            if (solved) return true;
-            if (timedOut) return null;
-            return false;
-        }
-
         function boardToKey(board) {
             return board.map(row => row.join(',')).join('|');
         }
 
         function cloneBoard(board) {
             return board.map(row => [...row]);
-        }
-
-        function findAllPossiblePairs(board) {
-            const numbers = [];
-
-            for (let row = 0; row < board.length; row++) {
-                for (let col = 0; col < COLS; col++) {
-                    if (board[row][col] !== 0) {
-                        numbers.push({
-                            row,
-                            col,
-                            value: board[row][col]
-                        });
-                    }
-                }
-            }
-
-            const pairs = [];
-
-            for (let i = 0; i < numbers.length; i++) {
-                for (let j = i + 1; j < numbers.length; j++) {
-                    const cell1 = numbers[i];
-                    const cell2 = numbers[j];
-
-                    if (areValuesCompatible(cell1, cell2) && canConnect(cell1, cell2, board)) {
-                        pairs.push({ cell1, cell2 });
-                    }
-                }
-            }
-
-            return pairs;
-        }
-
-        function applyPairToBoard(board, pair) {
-            const nextBoard = cloneBoard(board);
-
-            nextBoard[pair.cell1.row][pair.cell1.col] = 0;
-            nextBoard[pair.cell2.row][pair.cell2.col] = 0;
-
-            return removeEmptyRowsFromBoard(nextBoard);
         }
 
         function showMessage(text, type) {
