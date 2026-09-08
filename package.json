@@ -22,8 +22,21 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
     "tailwindcss": "4.1.17",
-    "typescript": "5.9.3",
+    "typescript": "^5.9.3",
     "vite": "7.3.2",
     "vite-plugin-singlefile": "2.3.0"
-  }
+  },
+  "description": "A hub of classic easy to run games in the browser for PC and mobile.",
+  "main": "sw.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarcelZelent/Match10.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarcelZelent/Match10/issues"
+  },
+  "homepage": "https://github.com/MarcelZelent/Match10#readme"
 }
