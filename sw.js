@@ -1,10 +1,11 @@
-const CACHE_NAME = 'number-games-v2';
+const CACHE_NAME = 'number-games-v3';
 const urlsToCache = [
   './',
   './index.html',
   './make10.html',
   './sudoku.html',
   './balls.html',
+  './tetris.html',
   './manifest.json'
 ];
 

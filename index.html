@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gry Liczbowe - Make 10 & Sudoku</title>
-    
+
     <!-- PWA Meta Tags -->
-    <meta name="description" content="Graj w Make 10 i Sudoku offline">
+    <meta name="description" content="Graj w Make 10, Sudoku, Color Lines i Fluxwell offline">
     <meta name="theme-color" content="#667eea">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Gry Liczbowe">
-    
+
     <style>
         * {
             margin: 0;
@@ -218,14 +218,14 @@
     <div class="container">
         <h1 id="main-title">🎮 Gry Liczbowe</h1>
         <p class="subtitle" id="subtitle">Wybierz grę</p>
-        
+
         <div class="games-grid">
             <a href="make10.html" class="game-card">
                 <div class="game-icon">🎯</div>
                 <div class="game-title" id="game1-title">Make 10</div>
                 <div class="game-description" id="game1-desc">Dopasuj liczby, które sumują się do 10 lub tworzą pary</div>
             </a>
-            
+
             <a href="sudoku.html" class="game-card">
                 <div class="game-icon">🧩</div>
                 <div class="game-title" id="game2-title">Sudoku</div>
@@ -235,17 +235,16 @@
             <a href="balls.html" class="game-card">
                 <div class="game-icon">🔴</div>
                 <div class="game-title" id="game3-title">Color Lines</div>
-                <div class="game-description" id="game3-desc">Move colored balls and make lines of 5</div>
+                <div class="game-description" id="game3-desc">Przesuwaj kolorowe kulki i układaj linie po 5</div>
             </a>
 
-            <div href="tetris.html">
-                <p>🌀</p>
-                <p>Fluxwell</p>
-                <p>Tetris z obracaną grawitacją — czyść linie w dwóch osiach</p>
-            </div>
-
+            <a href="tetris.html" class="game-card">
+                <div class="game-icon">🌀</div>
+                <div class="game-title" id="game4-title">Fluxwell</div>
+                <div class="game-description" id="game4-desc">Tetris z obracaną grawitacją — czyść linie w dwóch osiach</div>
+            </a>
         </div>
-        
+
         <div class="footer">
             <span id="footer-text">Stworzone z ❤️ | Graj za darmo</span>
             <br>
@@ -270,7 +269,9 @@
                 footerText: 'Stworzone z ❤️ | Graj za darmo',
                 installText: 'Zainstaluj aplikację',
                 game3Title: 'Color Lines',
-                game3Desc: 'Przesuwaj kolorowe kulki i układaj linie po 5'
+                game3Desc: 'Przesuwaj kolorowe kulki i układaj linie po 5',
+                game4Title: 'Fluxwell',
+                game4Desc: 'Tetris z obracaną grawitacją — czyść linie w dwóch osiach'
             },
             en: {
                 mainTitle: '🎮 Number Games',
@@ -282,19 +283,21 @@
                 footerText: 'Made with ❤️ | Free to play',
                 installText: 'Install App',
                 game3Title: 'Color Lines',
-                game3Desc: 'Move colored balls and make lines of 5'
+                game3Desc: 'Move colored balls and make lines of 5',
+                game4Title: 'Fluxwell',
+                game4Desc: 'Tetris with a gravity-flipping arena — clear lines on two axes'
             }
         };
 
         function setLanguage(lang) {
             localStorage.setItem('language', lang);
-            
+
             // Update button states without relying on the global event object
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 const isActive = btn.textContent.includes(lang === 'pl' ? 'Polski' : 'English');
                 btn.classList.toggle('active', isActive);
             });
-            
+
             // Update text
             const t = translations[lang];
             document.getElementById('main-title').textContent = t.mainTitle;
@@ -305,9 +308,11 @@
             document.getElementById('game2-desc').textContent = t.game2Desc;
             document.getElementById('game3-title').textContent = t.game3Title;
             document.getElementById('game3-desc').textContent = t.game3Desc;
+            document.getElementById('game4-title').textContent = t.game4Title;
+            document.getElementById('game4-desc').textContent = t.game4Desc;
             document.getElementById('footer-text').textContent = t.footerText;
             document.getElementById('install-text').textContent = t.installText;
-            
+
             document.documentElement.lang = lang;
         }
 
