@@ -1,0 +1,240 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Unbounded", system-ui, sans-serif;
+  --font-sans: "Space Grotesk", system-ui, sans-serif;
+
+  --color-void: #05060e;
+  --color-void-2: #0a0d1e;
+  --color-panel: rgba(13, 17, 38, 0.72);
+  --color-line: rgba(120, 140, 255, 0.14);
+  --color-neon-cyan: #22e6ff;
+  --color-neon-violet: #c96bff;
+  --color-neon-pink: #ff4d9d;
+  --color-neon-gold: #ffe14d;
+  --color-neon-green: #52ffa0;
+  --color-neon-red: #ff4d6d;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #05060e;
+  color: #e8ecff;
+  font-family: var(--font-sans);
+  overflow: hidden;
+  overscroll-behavior: none;
+  position: fixed;
+  inset: 0;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  font-variant-numeric: tabular-nums;
+}
+
+canvas {
+  display: block;
+}
+
+.no-touch {
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+
+.fw-pad-btn > * {
+  pointer-events: none;
+}
+
+/* ---------- keyframes ---------- */
+
+@keyframes fw-float {
+  0%, 100% { transform: translateY(0px) rotate(var(--rot, 0deg)); }
+  50% { transform: translateY(-14px) rotate(var(--rot, 0deg)); }
+}
+
+@keyframes fw-blink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0.15; }
+}
+
+@keyframes fw-title-sheen {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes fw-rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fw-pop {
+  0% { opacity: 0; transform: scale(0.7); }
+  60% { opacity: 1; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fw-ready {
+  0% { opacity: 0; transform: scale(2.4); filter: blur(10px); }
+  25% { opacity: 1; transform: scale(1); filter: blur(0); }
+  78% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.85); }
+}
+
+@keyframes fw-pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(34, 230, 255, 0.55); }
+  100% { box-shadow: 0 0 0 16px rgba(34, 230, 255, 0); }
+}
+
+@keyframes fw-grade {
+  from { transform: translateX(-30%); }
+  to { transform: translateX(230%); }
+}
+
+@keyframes fw-danger {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+@keyframes fw-spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- utilities ---------- */
+
+.fw-title {
+  font-family: var(--font-display);
+  background: linear-gradient(100deg, #22e6ff 0%, #7d8bff 22%, #c96bff 45%, #ff4d9d 68%, #22e6ff 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: fw-title-sheen 7s ease-in-out infinite;
+  filter: drop-shadow(0 0 22px rgba(120, 110, 255, 0.45));
+}
+
+.text-glow-cyan { text-shadow: 0 0 14px rgba(34, 230, 255, 0.8), 0 0 40px rgba(34, 230, 255, 0.35); }
+.text-glow-pink { text-shadow: 0 0 14px rgba(255, 77, 157, 0.8), 0 0 40px rgba(255, 77, 157, 0.35); }
+.text-glow-gold { text-shadow: 0 0 14px rgba(255, 225, 77, 0.8), 0 0 40px rgba(255, 225, 77, 0.3); }
+
+.fw-panel {
+  background: linear-gradient(160deg, rgba(19, 24, 52, 0.82), rgba(9, 12, 28, 0.86));
+  border: 1px solid rgba(124, 140, 255, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(160, 180, 255, 0.12),
+    0 12px 40px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.fw-notch {
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+}
+
+.fw-scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.028) 0px,
+    rgba(255, 255, 255, 0.028) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  mix-blend-mode: overlay;
+  border-radius: inherit;
+}
+
+.fw-vignette::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 90% 80% at 50% 45%, transparent 55%, rgba(2, 3, 9, 0.65) 100%);
+  z-index: -0;
+}
+
+.fw-stage-frame {
+  border: 1px solid rgba(130, 150, 255, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(20, 24, 50, 0.9),
+    0 0 34px rgba(80, 100, 255, 0.22),
+    0 0 120px rgba(60, 60, 200, 0.12),
+    inset 0 0 46px rgba(8, 10, 24, 0.9);
+  border-radius: 10px;
+}
+
+.fw-btn {
+  transition: transform 90ms ease, filter 120ms ease, background-color 120ms ease;
+}
+.fw-btn:active { transform: scale(0.94); }
+
+.fw-pad-btn {
+  touch-action: none;
+  transition: transform 60ms ease, background-color 90ms ease, box-shadow 90ms ease;
+}
+.fw-pad-btn.fw-held {
+  transform: scale(0.92);
+  background-color: rgba(34, 230, 255, 0.16);
+  box-shadow: 0 0 18px rgba(34, 230, 255, 0.35), inset 0 0 12px rgba(34, 230, 255, 0.2);
+}
+
+.fw-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.7rem;
+  height: 1.7rem;
+  padding: 0 0.45rem;
+  border-radius: 6px;
+  border: 1px solid rgba(150, 165, 255, 0.3);
+  border-bottom-width: 2px;
+  background: linear-gradient(180deg, rgba(40, 48, 92, 0.9), rgba(18, 22, 48, 0.9));
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #cdd5ff;
+  letter-spacing: 0.02em;
+}
+
+.fw-marquee-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.fw-marquee-sheen::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 30%;
+  background: linear-gradient(100deg, transparent, rgba(160, 200, 255, 0.1), transparent);
+  animation: fw-grade 5s ease-in-out infinite;
+}
+
+input.fw-input {
+  background: rgba(10, 13, 30, 0.9);
+  border: 1px solid rgba(124, 140, 255, 0.35);
+  outline: none;
+  letter-spacing: 0.35em;
+}
+input.fw-input:focus {
+  border-color: rgba(34, 230, 255, 0.8);
+  box-shadow: 0 0 18px rgba(34, 230, 255, 0.3);
+}
+
+.float-slow { animation: fw-float 6s ease-in-out infinite; }
+.float-slower { animation: fw-float 8.5s ease-in-out infinite; }
+.blink { animation: fw-blink 1.15s steps(1) infinite; }
+.rise-in { animation: fw-rise 0.5s cubic-bezier(0.2, 0.9, 0.25, 1.2) both; }
+.pop-in { animation: fw-pop 0.45s cubic-bezier(0.2, 1.2, 0.3, 1.2) both; }
+.ready-anim { animation: fw-ready 0.95s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.danger-pulse { animation: fw-danger 0.9s ease-in-out infinite; }
+.spin-slow { animation: fw-spin-slow 14s linear infinite; }
+.pulse-ring { animation: fw-pulse-ring 1.4s ease-out infinite; }
